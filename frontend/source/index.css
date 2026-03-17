@@ -1,17 +1,82 @@
-.stat-card {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--accent);
-    opacity: 0.6;
-  }
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
+
+:root {
+  --bg: #0e0f11;
+  --bg-2: #16181c;
+  --bg-3: #1e2127;
+  --border: #2a2d35;
+  --border-hover: #3d4149;
+  --text: #e8eaed;
+  --text-muted: #8b8fa8;
+  --text-dim: #565a70;
+  --accent: #c8f261;
+  --accent-dark: #9abe3d;
+  --accent-glow: rgba(200, 242, 97, 0.12);
+  --red: #ff5f5f;
+  --amber: #ffb347;
+  --blue: #5fa8ff;
+  --purple: #a78bfa;
+  --teal: #5ff0d4;
+
+  --status-applied: var(--blue);
+  --status-phone: var(--amber);
+  --status-technical: var(--purple);
+  --status-onsite: var(--teal);
+  --status-offer: var(--accent);
+  --status-rejected: var(--red);
+  --status-withdrawn: var(--text-dim);
+
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+
+  font-family: 'DM Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-2); }
+::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
+
+/* Typography */
+h1, h2, h3 { font-family: 'DM Serif Display', serif; letter-spacing: -0.02em; }
+code, .mono { font-family: 'DM Mono', monospace; }
+
+/* Layout */
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  background: var(--bg-2);
+  border-right: 1px solid var(--border);
+  padding: 28px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: var(--accent);
+  padding: 8px 12px 24px;
+  letter-spacing: -0.03em;
+}
+
+.sidebar-logo span { color: var(--text-muted); font-size: 11px; font-family: 'DM Mono', monospace; display: block; margin-top: 2px; font-style: italic; }
