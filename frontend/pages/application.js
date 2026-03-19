@@ -26,4 +26,46 @@ export default function Applications() {
     setApps(r.data);
     setLoading(false);
   }, [filter, search]);
-  
+  useEffect(() => { load(); }, [load]);
+
+  const refreshSelected = async (id) => {
+    const r = await getApplication(id);
+    setSelected(r.data);
+  };
+
+  const handleSaveApp = async (form) => {
+    if (editApp) {
+      await updateApplication(editApp.id, form);
+    } else {
+      await createApplication(form);
+    }
+    setShowAppModal(false);
+    setEditApp(null);
+    load();
+    if (selected && editApp?.id === selected.id) refreshSelected(selected.id);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this application?')) return;
+    await deleteApplication(id);
+    if (selected?.id === id) setSelected(null);
+    load();
+  };
+
+  const handleSaveInterview = async (form) => {
+    if (editInterview) {
+      await updateInterview(editInterview.id, form);
+    } else {
+      await createInterview(selected.id, form);
+    }
+    setShowInterviewModal(false);
+    setEditInterview(null);
+    refreshSelected(selected.id);
+    load();
+  };
+
+  const handleDeleteInterview = async (id) => {
+    if (!window.confirm('Delete this interview?')) return;
+    await deleteInterview(id);
+    refreshSelected(selected.id);
+  };
