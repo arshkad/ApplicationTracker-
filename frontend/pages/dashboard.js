@@ -44,3 +44,60 @@ export default function Dashboard({ setPage }) {
           </div>
         ))}
       </div> 
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24 }}>
+        {/* Funnel */}
+        <div className="card">
+          <h3 style={{ fontSize: 16, marginBottom: 20 }}>Application Funnel</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {byStatus.filter(s => s.count > 0).map(({ status, count }) => (
+              <div key={status}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{status}</span>
+                  <span style={{ fontSize: 12, fontFamily: 'DM Mono', color: 'var(--text)' }}>{count}</span>
+                </div>
+                <div style={{ height: 4, background: 'var(--bg-3)', borderRadius: 2, overflow: 'hidden' }}>
+                  <div style={{
+                    height: '100%',
+                    width: `${total ? (count / total) * 100 : 0}%`,
+                    background: 'var(--accent)',
+                    opacity: 0.7,
+                    borderRadius: 2,
+                    transition: 'width 0.6s ease'
+                  }} />
+                </div>
+              </div>
+            ))}
+            {total === 0 && <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>No applications yet.</p>}
+          </div>
+        </div>
+
+        {/* Recent */}
+        <div className="card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <h3 style={{ fontSize: 16 }}>Recent Applications</h3>
+            <button className="btn btn-ghost" style={{ fontSize: 12, padding: '4px 10px' }} onClick={() => setPage('applications')}>
+              View all →
+            </button>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {recent.map(app => (
+              <div key={app.id} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div className="company-avatar">{app.company[0]}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{app.company}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{app.role}</div>
+                </div>
+                <StatusBadge status={app.status} />
+              </div>
+            ))}
+            {recent.length === 0 && (
+              <div className="empty-state" style={{ padding: '20px 0' }}>
+                <p>No applications yet. Start tracking!</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
