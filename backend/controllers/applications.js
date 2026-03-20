@@ -93,3 +93,49 @@ const updateApplication = async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   };
+  // DELETE application
+const deleteApplication = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await pool.query('DELETE FROM applications WHERE id = $1 RETURNING id', [id]);
+      if (!result.rows.length) return res.status(404).json({ error: 'Not found' });
+      res.json({ message: 'Deleted', id });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };
+  
+  // GET analytics
+  const getAnalytics = async (req, res) => {
+    try {
+      const [statusCount, monthlyCount, stageCount, responseRate] = await Promise.all([
+        pool.query(`SELECT status, COUNT(*) as count FROM applications GROUP BY status`),
+        pool.query(`
+          SELECT TO_CHAR(applied_date, 'Mon YYYY') as month,
+                 DATE_TRUNC('month', applied_date) as month_date,
+                 COUNT(*) as count
+          FROM applications
+          GROUP BY month, month_date
+          ORDER BY month_date DESC LIMIT 6
+        `),
+        pool.query(`SELECT stage, COUNT(*) as count FROM interviews GROUP BY stage`),
+        pool.query(`
+          SELECT 
+            COUNT(*) as total,
+            COUNT(CASE WHEN status NOT IN ('Applied', 'Rejected') THEN 1 END) as responded
+          FROM applications
+        `),
+      ]);
+  
+      res.json({
+        byStatus: statusCount.rows,
+        byMonth: monthlyCount.rows.reverse(),
+        interviewStages: stageCount.rows,
+        responseRate: responseRate.rows[0],
+      });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };
+  
+  module.exports = { getApplications, getApplication, createApplication, updateApplication, deleteApplication, getAnalytics };
