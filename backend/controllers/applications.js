@@ -38,3 +38,40 @@ const getApplications = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+// GET single application with interviews
+const getApplication = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const appResult = await pool.query('SELECT * FROM applications WHERE id = $1', [id]);
+      if (!appResult.rows.length) return res.status(404).json({ error: 'Not found' });
+  
+      const interviewResult = await pool.query(
+        'SELECT * FROM interviews WHERE application_id = $1 ORDER BY scheduled_date ASC',
+        [id]
+      );
+  
+      res.json({ ...appResult.rows[0], interviews: interviewResult.rows });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };
+  
+  // POST create application
+  const createApplication = async (req, res) => {
+    try {
+      const { company, role, status, applied_date, location, salary_min, salary_max, job_url, notes } = req.body;
+      if (!company || !role || !applied_date) {
+        return res.status(400).json({ error: 'company, role, and applied_date are required' });
+      }
+  
+      const result = await pool.query(
+        `INSERT INTO applications (company, role, status, applied_date, location, salary_min, salary_max, job_url, notes)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
+        [company, role, status || 'Applied', applied_date, location, salary_min, salary_max, job_url, notes]
+      );
+      res.status(201).json(result.rows[0]);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };
+  
