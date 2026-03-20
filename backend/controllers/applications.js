@@ -74,4 +74,22 @@ const getApplication = async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   };
+  // PUT update application
+const updateApplication = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { company, role, status, applied_date, location, salary_min, salary_max, job_url, notes } = req.body;
   
+      const result = await pool.query(
+        `UPDATE applications SET
+          company=$1, role=$2, status=$3, applied_date=$4,
+          location=$5, salary_min=$6, salary_max=$7, job_url=$8, notes=$9
+         WHERE id=$10 RETURNING *`,
+        [company, role, status, applied_date, location, salary_min, salary_max, job_url, notes, id]
+      );
+      if (!result.rows.length) return res.status(404).json({ error: 'Not found' });
+      res.json(result.rows[0]);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };
