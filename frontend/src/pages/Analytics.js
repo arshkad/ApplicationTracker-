@@ -27,7 +27,7 @@ export default function Analytics() {
   useEffect(() => {
     Promise.all([getAnalytics(), getApplications()]).then(([a, b]) => {
       setAnalytics(a.data);
-      setApps(b.data);
+      setApps(Array.isArray(b.data) ? b.data : []);
       setLoading(false);
     });
   }, []);
