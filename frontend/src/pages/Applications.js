@@ -23,7 +23,7 @@ export default function Applications() {
     if (filter !== 'All') params.status = filter;
     if (search) params.search = search;
     const r = await getApplications(params);
-    setApps(r.data);
+    setApps(Array.isArray(r.data) ? r.data : []);
     setLoading(false);
   }, [filter, search]);
 
