@@ -10,8 +10,11 @@ export default function Dashboard({ setPage }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getApplications().then(r => { setApps(r.data); setLoading(false); });
-  }, []);
+    getApplications().then(r => { 
+      setApps(Array.isArray(r.data) ? r.data : []); 
+      setLoading(false); 
+    });
+}, []);
 
   const total = apps.length;
   const active = apps.filter(a => !['Rejected', 'Withdrawn', 'Offer'].includes(a.status)).length;
