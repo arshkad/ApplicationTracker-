@@ -35,6 +35,7 @@ const getApplications = async (req, res) => {
     const result = await pool.query(query, params);
     res.json(result.rows);
   } catch (err) {
+    console.error('CREATE ERROR:', err);
     res.status(500).json({ error: err.message });
   }
 };
