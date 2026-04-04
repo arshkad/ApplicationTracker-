@@ -26,7 +26,22 @@ export default function ApplicationModal({ app, onSave, onClose }) {
   const handleSubmit = async () => {
     if (!form.company || !form.role || !form.applied_date) return;
     setSaving(true);
-    try { await onSave(form); } finally { setSaving(false); }
+    try { 
+      const cleanForm = {
+        company: form.company,
+        role: form.role,
+        status: form.status || 'Applied',
+        applied_date: form.applied_date,
+        location: form.location || null,
+        salary_min: form.salary_min ? parseInt(form.salary_min) : null,
+        salary_max: form.salary_max ? parseInt(form.salary_max) : null,
+        job_url: form.job_url || null,
+        notes: form.notes || null,
+      };
+      await onSave(cleanForm); 
+    } finally { 
+      setSaving(false); 
+    }
   };
 
   return (
